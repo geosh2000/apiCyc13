@@ -386,13 +386,16 @@ class Salesforce_model extends CI_Model{
         
         $url = "getOpportunities";
         
-        if( !isset($params['tipo']) || $params['tipo'] == null ){
-            errResp('No se obtuvo el tipo de oportunidad', REST_Controller::HTTP_BAD_REQUEST, 'error', array() );
+        if( !isset($params['opportunityId'])  ){
+            if( isset($params['tipo']) || $params['tipo'] == null ){
+                errResp('No se obtuvo el tipo de oportunidad', REST_Controller::HTTP_BAD_REQUEST, 'error', array() );
+            }
+            
+            $params['tipo'] = $this->validateTipo($params['tipo']);
+            
+            $params['idComercial'] = $this->getSfId( $params['tipo'] );
         }
         
-        $params['tipo'] = $this->validateTipo($params['tipo']);
-        
-        $params['idComercial'] = $this->getSfId( $params['tipo'] );
         // $params['idComercial'] = '0001cotizador';
         
         $result = $this->getDataSF( $url, $params, true );
